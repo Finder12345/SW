@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(git config:*)",
+      "Bash(python:*)"
+    ]
+  }
+}
