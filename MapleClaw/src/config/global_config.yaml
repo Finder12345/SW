@@ -1,0 +1,41 @@
+
+workspace:
+  user_root_dir: default
+
+
+model:
+  llm_provider: openai
+  llm_base_url: http://192.168.145.16/v1/
+  llm_api_key: sk-LA4KngJCQfVfsSLD7xjkfmxdpvSKUljIL7gEsb2OVKqaaihh
+  llm_name: gpt-5.2
+  embedding_model_provider: openai
+  embedding_model_base_url: http://192.168.145.16/v1/
+  embedding_model_api_key: sk-LA4KngJCQfVfsSLD7xjkfmxdpvSKUljIL7gEsb2OVKqaaihh
+  embedding_model_name: text-embedding-3-large
+  embedding_model_dimensions: 1536
+
+
+http_service:
+  host: 0.0.0.0
+  port: 10111
+
+
+gateway:
+  enabled: True
+  register_user:
+    feishu:
+      zw:
+        app_id: cli_a9250d6e30b89bef
+        app_secret: 7nkRQdvT43Zw1NOZcX1tZesjkUaBXYm8
+        user_dir: default
+        available_agents:
+          - assistant
+          - dnkt
+          - autosar
+          - ut
+          - codereview
+
+
+
+
+
