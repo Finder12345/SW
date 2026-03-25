@@ -6,8 +6,10 @@ workspace:
 model:
   llm_provider: openai
   llm_base_url: http://192.168.145.16/v1/
-  llm_api_key: sk-LA4KngJCQfVfsSLD7xjkfmxdpvSKUljIL7gEsb2OVKqaaihh
-  llm_name: gpt-5.2
+#  llm_api_key: sk-LA4KngJCQfVfsSLD7xjkfmxdpvSKUljIL7gEsb2OVKqaaihh
+#  llm_name: gpt-5.2
+  llm_api_key: sk-iymGgWSwcQXLjj5F0eFQjcdoBoodwv9lZ76T8YY0VndITLCe
+  llm_name: gpt-5.4
   embedding_model_provider: openai
   embedding_model_base_url: http://192.168.145.16/v1/
   embedding_model_api_key: sk-LA4KngJCQfVfsSLD7xjkfmxdpvSKUljIL7gEsb2OVKqaaihh

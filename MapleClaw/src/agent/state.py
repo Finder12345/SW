@@ -1,59 +1,54 @@
-from typing import List, Dict, Optional, Any
+"""Agent 状态定义。"""
+
+from __future__ import annotations
+
+from typing import Annotated, Any, NotRequired, Sequence
+
 from langchain_core.messages import AnyMessage
 from langgraph.graph.message import add_messages
-from langchain_core.messages import BaseMessage
-from pydantic import BaseModel
 from typing_extensions import TypedDict
 
-from typing import Annotated, Any, Sequence
 
-class SkillEntry(TypedDict, total=False):
-    """单个已加载技能在 state 中的表示。"""
+class SkillMetadata(TypedDict):
+    """单个技能的元数据，从 SKILL.md front-matter 解析。
+
+    对齐 Agent Skills specification (OpenCalw) 简化版：
+    - name + description 用于 LLM 判断是否需要该技能
+    - path 用于 LLM 通过文件读取工具按需加载全文
+    - sections 列表用于 LLM 精准定位某个 section
+    - allowed_tools 列表记录该 skill 建议搭配使用的运行时工具
+    - triggers 触发关键词列表（OpenCalw 字段）
+    - priority 优先级（OpenCalw 字段）
+    - max_tokens 最大 token 数（OpenCalw 字段）
+    - requires 依赖条件（OpenCalw Gate 规则）
+    - emoji 展示图标（OpenCalw 字段）
+    - install 安装指引（OpenCalw 字段）
+    """
     name: str
     description: str
-    sections: dict[str, str]     # section_name -> section_content
-    tool_names: list[str]        # 该技能注册的工具名列表
-    fully_loaded: bool           # 是否已加载全部 section
+    path: str                      # SKILL.md 的绝对路径
+    sections: list[str]            # ## 标题列表
+    allowed_tools: list[str]       # front-matter 中声明的推荐工具名
+    # OpenCalw 扩展字段
+    triggers: list[str]           # 触发关键词
+    priority: str                 # 优先级（high/medium/low）
+    max_tokens: int              # 最大 token 数
+    requires: dict[str, Any]       # 依赖条件（Gate 规则）
+    emoji: str                    # 展示图标
+    install: list[dict[str, Any]]  # 安装指引
 
-class AgentState(BaseModel):
 
-    # ===== 核心 =====
+class AgentState(TypedDict):
+    """MapleClaw Agent 的核心状态。
+
+    Attributes:
+        messages: 对话消息列表，使用 add_messages reducer 自动合并。
+        skills_metadata: 已扫描的技能元数据列表。由 SkillMiddleware.before_agent 填充，
+                         后续轮次若已存在则跳过重复扫描。
+        turn_count: 当前对话轮次计数。
+        metadata: 可扩展的元数据字典。
+    """
     messages: Annotated[Sequence[AnyMessage], add_messages]
-
-    step: int = 0
-    max_steps: int = 10
-
-    next: Optional[str] = None
-
-    final_answer: Optional[str] = None
-
-    intermediate_steps: List[Dict] = []
-
-    # ===== tool =====
-
-    tool_name: Optional[str] = None
-    tool_input: Optional[Dict] = None
-    tool_output: Optional[str] = None
-
-    tools: Optional[List[str]] = None
-
-    # ===== memory =====
-
-    memory: Dict[str, Any] = {}
-
-    rag_context: Optional[str] = None
-
-    # ===== control =====
-
-    finished: bool = False
-
-    error: Optional[str] = None
-
-    metadata: Dict[str, Any] = {}
-
-    # skill
-    skill_registry: str
-    loaded_skills: dict[str, SkillEntry]
-    phase: str          # "discovery" | "ready"
+    skills_metadata: NotRequired[list[SkillMetadata]]
     turn_count: int
     metadata: dict[str, Any]

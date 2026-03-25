@@ -1,7 +1,8 @@
-"""Bash / Shell 命令执行工具。"""
+"""Shell 命令执行工具。"""
 
 from __future__ import annotations
 
+import os
 import subprocess
 
 from langchain_core.tools import tool
@@ -12,20 +13,28 @@ DEFAULT_TIMEOUT = 60
 MAX_OUTPUT_LENGTH = 8000
 
 
+def _get_shell_command(command: str) -> list[str]:
+    if os.name == "nt":
+        return ["cmd", "/c", command]
+    return ["bash", "-c", command]
+
+
 @tool
-def run_bash(command: str, timeout: int = DEFAULT_TIMEOUT, cwd: str | None = None) -> str:
-    """在 bash shell 中执行命令并返回输出。
+def run_shell(command: str, timeout: int = DEFAULT_TIMEOUT, cwd: str | None = None) -> str:
+    """在当前平台默认 shell 中执行命令并返回输出。
 
     Args:
-        command: 要执行的 bash 命令
+        command: 要执行的 shell 命令
         timeout: 超时时间（秒），默认 60
         cwd: 工作目录，默认为当前目录
     """
     try:
         result = subprocess.run(
-            ["bash", "-c", command],
+            _get_shell_command(command),
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             timeout=min(timeout, 300),  # 上限 5 分钟
             cwd=cwd,
         )
@@ -48,8 +57,8 @@ def run_bash(command: str, timeout: int = DEFAULT_TIMEOUT, cwd: str | None = Non
 
 
 @tool
-def run_bash_interactive(commands: list[str], timeout: int = DEFAULT_TIMEOUT, cwd: str | None = None) -> str:
-    """按顺序执行多条 bash 命令，返回每条的输出。适合有依赖关系的连续命令。
+def run_shell_interactive(commands: list[str], timeout: int = DEFAULT_TIMEOUT, cwd: str | None = None) -> str:
+    """按顺序执行多条 shell 命令，返回每条的输出。适合有依赖关系的连续命令。
 
     Args:
         commands: 命令列表，按顺序执行
@@ -59,11 +68,11 @@ def run_bash_interactive(commands: list[str], timeout: int = DEFAULT_TIMEOUT, cw
     results: list[str] = []
     for i, cmd in enumerate(commands):
         results.append(f"--- [{i + 1}] $ {cmd} ---")
-        output = run_bash.invoke({"command": cmd, "timeout": timeout, "cwd": cwd})
+        output = run_shell.invoke({"command": cmd, "timeout": timeout, "cwd": cwd})
         results.append(output)
     return _truncate("\n".join(results))
 
-
+                                                                                                                      
 def _truncate(text: str) -> str:
     if len(text) <= MAX_OUTPUT_LENGTH:
         return text

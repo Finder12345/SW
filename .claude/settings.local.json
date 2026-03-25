@@ -5,7 +5,8 @@
       "Bash(curl:*)",
       "Bash(netstat:*)",
       "Bash(git config:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(PYTHONPATH=\"D:/CODE/MYSELF/SW\" python:*)"
     ]
   }
 }
