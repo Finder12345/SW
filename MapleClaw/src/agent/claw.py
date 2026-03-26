@@ -1,10 +1,20 @@
+import logging
+import sys
+from pathlib import Path
+
+print(f"Original sys.path: {sys.path[0]}")
+
+
+if __package__ in {None, ""}:
+    package_parent = Path(__file__).resolve().parents[3]
+    if str(package_parent) not in sys.path:
+        sys.path.insert(0, str(package_parent))    # 将项目根目录添加到 sys.path 中   
+
 from langchain.agents import create_agent
 
 from MapleClaw.src.model.llm import get_llm
 from MapleClaw.src.middleware.middleware_skills.middleware_skill import SkillMiddleware
 from MapleClaw.src.tools import ALL_BUILTIN_TOOLS
-
-import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 

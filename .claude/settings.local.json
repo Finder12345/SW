@@ -6,7 +6,8 @@
       "Bash(netstat:*)",
       "Bash(git config:*)",
       "Bash(python:*)",
-      "Bash(PYTHONPATH=\"D:/CODE/MYSELF/SW\" python:*)"
+      "Bash(PYTHONPATH=\"D:/CODE/MYSELF/SW\" python:*)",
+      "WebSearch"
     ]
   }
 }

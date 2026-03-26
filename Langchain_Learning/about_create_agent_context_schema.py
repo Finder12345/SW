@@ -11,7 +11,6 @@ class CustomContext:
 
 
 @tool
-
 def get_user_profile(runtime: ToolRuntime[CustomContext]) -> str:
     """读取 context 中的用户资料。"""
     return f"当前用户ID是 {runtime.context.user_id}，所在城市是 {runtime.context.city}"
